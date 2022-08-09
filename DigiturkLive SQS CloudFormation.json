@@ -1,0 +1,79 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Best Practice SQS Standard Queue",
+    "Parameters": {
+        "DelaySeconds": {
+            "Description": "The time in seconds that the delivery of all messages in the queue is delayed. You can specify an integer value of 0 to 900 (15 minutes).",
+            "Type": "Number",
+            "Default": "0"
+        },
+        "MaximumMessageSize": {
+            "Type": "Number",
+            "Description": "The limit of how many bytes that a message can contain before Amazon SQS rejects it, 1024 bytes (1 KiB) to 262144 bytes (256 KiB)",
+            "Default": "262144"
+        },
+        "MessageRetentionPeriod": {
+            "Description": "The number of seconds that Amazon SQS retains a message. You can specify an integer value from 60 seconds (1 minute) to 1209600 seconds (14 days). ",
+            "Type": "Number",
+            "Default": "1209600"
+        },
+        "ReceiveMessageWaitTimeSeconds": {
+            "Description": "Specifies the duration, in seconds, that the ReceiveMessage action call waits until a message is in the queue in order to include it in the response, as opposed to returning an empty response if a message is not yet available. 1 to 20",
+            "Type": "Number",
+            "Default": "0"
+        },
+        "QueueName": {
+            "Description": "Name of the Queue",
+            "Type": "String",
+            "Default": "UserDeny"
+        },
+        "VisibilityTimeout": {
+            "Description": "This should be longer than the time it would take to process and delete a message, this should not exceed 12 hours.",
+            "Type": "Number",
+            "Default": "30"
+        }
+    },
+    "Mappings": {},
+    "Resources": {
+        "SQSQueue": {
+            "Type": "AWS::SQS::Queue",
+            "Properties": {
+                "DelaySeconds": {
+                    "Ref": "DelaySeconds"
+                },
+                "QueueName": {
+                    "Ref": "QueueName"
+                },
+                "MaximumMessageSize": {
+                    "Ref": "MaximumMessageSize"
+                },
+                "MessageRetentionPeriod": {
+                    "Ref": "MessageRetentionPeriod"
+                },
+                "ReceiveMessageWaitTimeSeconds": {
+                    "Ref": "ReceiveMessageWaitTimeSeconds"
+                },
+                "VisibilityTimeout": {
+                    "Ref": "VisibilityTimeout"
+                }
+            }
+        }
+    },
+    "Outputs": {
+        "QueueURL": {
+            "Description": "URL of newly created SQS Queue",
+            "Value": {
+                "Ref": "SQSQueue"
+            }
+        },
+        "QueueARN": {
+            "Description": "ARN of newly created SQS Queue",
+            "Value": {
+                "Fn::GetAtt": [
+                    "SQSQueue",
+                    "Arn"
+                ]
+            }
+        }
+    }
+}
